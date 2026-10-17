@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Road to Abi Ep 1</title>
+<style>
+  :root {
+    --navy: #0B1A33; --navy2: #132A52; --card: #10264A; --line: rgba(255,255,255,.12);
+    --white: #FFFFFF; --muted: rgba(255,255,255,.62); --yellow: #FFD43B;
+    --red: #FF5A5F; --green: #2FD27A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  body { font-family: "Inter Display", "Inter", sans-serif; color: var(--white); -webkit-font-smoothing: antialiased; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden;
+    background: radial-gradient(1200px 900px at 50% 38%, var(--navy2), var(--navy) 70%); }
+  #blob { position: absolute; width: 900px; height: 900px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,212,59,.10), rgba(255,212,59,0) 65%); }
+  #grid { position: absolute; inset: 0; opacity: .5;
+    background-image: radial-gradient(rgba(255,255,255,.07) 2px, transparent 2px); background-size: 54px 54px; }
+  .y { color: var(--yellow); }
+  .r { color: var(--red); }
+  .g { color: var(--green); }
+  .emoji { font-family: "Noto Color Emoji"; font-weight: 400; }
+
+  /* persistent chrome */
+  #progress { position: absolute; left: 0; top: 0; height: 10px; background: var(--yellow); }
+  #tag { position: absolute; left: 60px; top: 150px; padding: 14px 26px; border-radius: 999px;
+    border: 3px solid var(--yellow); color: var(--yellow); font: 800 30px/1 "Inter Display"; letter-spacing: .02em;
+    background: rgba(11,26,51,.6); }
+  #tag b { color: var(--white); font-weight: 800; }
+  #brand { position: absolute; right: 60px; top: 160px; font: 700 28px/1 "Inter Display"; color: var(--muted); }
+  #brand span { color: var(--white); }
+
+  .scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; opacity: 0; }
+  .title { position: absolute; left: 70px; right: 70px; text-align: center; font-weight: 900; letter-spacing: -.02em; }
+  .de { position: absolute; left: 70px; right: 70px; text-align: center; font: 600 38px/1.2 "Inter Display"; color: var(--muted); }
+  .de i { font-style: normal; display: inline-block; padding: 4px 16px; border-radius: 10px; background: rgba(255,255,255,.08); }
+  .de i::before { content: "DE  "; color: var(--yellow); font-weight: 800; font-size: 28px; letter-spacing: .08em; }
+
+  /* captions */
+  #cap { position: absolute; left: 60px; right: 60px; top: 1360px; height: 260px; display: flex; align-items: center;
+    justify-content: center; text-align: center; font: 900 78px/1.12 "Inter Display"; letter-spacing: -.01em; }
+  #cap .w { display: inline-block; margin: 0 .13em; transition: none; text-shadow: 0 6px 24px rgba(0,0,0,.45); }
+  #cap .f { color: rgba(255,255,255,.32); }
+  #cap .p { color: #fff; }
+  #cap .p.k { color: var(--yellow); }
+  #cap .c { color: var(--yellow); transform: scale(1.1) translateY(-4px); }
+
+  /* badges */
+  .badge { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; flex: none; }
+  .badge svg { width: 60%; height: 60%; }
+  .badge.no { background: var(--red); box-shadow: 0 0 0 8px rgba(255,90,95,.18); }
+  .badge.ok { background: var(--green); box-shadow: 0 0 0 8px rgba(47,210,122,.18); }
+
+  /* scene 1: exam paper */
+  #paperWrap { position: absolute; left: 190px; top: 520px; width: 700px; height: 800px; }
+  #paper { position: absolute; inset: 0; background: #F6F3EA; border-radius: 18px; transform: rotate(-4deg);
+    box-shadow: 0 40px 80px rgba(0,0,0,.45); padding: 50px 54px; color: #1b2433; overflow: hidden; }
+  #paper .hd { font: 800 30px/1.2 "Inter"; display: flex; justify-content: space-between; border-bottom: 3px solid #d9d3c3; padding-bottom: 16px; }
+  #paper .hd small { font-weight: 600; color: #6b7280; font-size: 24px; }
+  #paper .task { font: 600 24px/1.35 "Inter"; color: #374151; margin: 18px 0 26px; }
+  #paper .task b { font-weight: 800; }
+  .ink { height: 14px; border-radius: 7px; background: #3a5a9a; opacity: .55; margin: 0 0 25px; }
+  #note1, #note2 { position: absolute; font: italic 800 34px/1 "Inter"; color: #E03131; transform: rotate(-8deg); }
+  #grade { position: absolute; right: 40px; bottom: 30px; width: 280px; height: 230px; }
+  #grade .n { position: absolute; left: 60px; top: 0; font: italic 900 200px/1 "Inter"; color: #E03131; }
+  #grade .of { position: absolute; left: 170px; top: 120px; font: italic 800 44px/1 "Inter"; color: #E03131; }
+  #grade svg { position: absolute; left: -10px; top: -30px; width: 300px; height: 270px; overflow: visible; }
+
+  /* scene 2 */
+  #s2card { position: absolute; left: 110px; right: 110px; top: 760px; height: 470px; border-radius: 36px;
+    background: var(--card); border: 3px solid var(--line); padding: 46px 54px; }
+  #s2card .lbl { font: 700 32px/1 "Inter Display"; color: var(--muted); }
+  #s2word { position: relative; display: inline-block; margin-top: 30px; font: 900 120px/1 "Inter Display"; letter-spacing: -.02em; }
+  #s2strike { position: absolute; left: -16px; top: 54%; height: 14px; border-radius: 7px; background: var(--red); transform: rotate(-4deg); transform-origin: left; }
+  #s2retell { margin-top: 34px; font: 600 34px/1.45 "Inter Display"; color: rgba(255,255,255,.45); }
+  #s2no { position: absolute; right: 50px; top: 46px; width: 96px; height: 96px; }
+  #s2tease { position: absolute; left: 0; right: 0; top: 1270px; text-align: center; font: 800 46px/1 "Inter Display"; color: var(--yellow); }
+
+  /* scene 3 */
+  .col { position: absolute; top: 700px; width: 440px; }
+  .col .card { height: 300px; border-radius: 36px; background: var(--card); border: 4px solid var(--yellow);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  .col .card .ic { font-size: 110px; line-height: 1; }
+  .col .card .nm { font: 900 70px/1 "Inter Display"; color: var(--yellow); letter-spacing: .01em; }
+  .col .card .sub { font: 600 30px/1 "Inter Display"; color: var(--muted); }
+  .chip { display: block; margin: 22px auto 0; width: max-content; max-width: 440px; padding: 16px 30px; border-radius: 999px;
+    background: rgba(255,255,255,.08); border: 2px solid var(--line); font: 800 36px/1 "Inter Display"; }
+  .chip.y { background: var(--yellow); color: var(--navy); border-color: var(--yellow); }
+  #plus { position: absolute; left: 0; right: 0; top: 790px; text-align: center; font: 900 110px/1 "Inter Display"; color: var(--white); }
+
+  /* scene 4 */
+  .sent { position: absolute; left: 70px; right: 70px; border-radius: 34px; background: var(--card); padding: 40px 44px 40px 150px; }
+  .sent .badge { position: absolute; left: 40px; top: 40px; width: 78px; height: 78px; }
+  .sent .lab { font: 800 28px/1 "Inter Display"; letter-spacing: .08em; margin-bottom: 18px; }
+  .sent p { font: 800 50px/1.28 "Inter Display"; letter-spacing: -.01em; }
+  #wrong { top: 470px; border: 4px solid var(--red); transform-origin: 50% 0; }
+  #wrong .lab { color: var(--red); }
+  #wrongStrike { position: absolute; left: 140px; right: 40px; top: 55%; height: 8px; border-radius: 4px; background: var(--red); transform-origin: left; }
+  #right { top: 770px; border: 4px solid var(--green); }
+  #right .lab { color: var(--green); }
+  .hl { position: relative; display: inline; padding: 0 4px; border-radius: 8px;
+    background-image: linear-gradient(var(--yellow), var(--yellow)); background-repeat: no-repeat; background-size: 0% 100%;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  #legend { position: absolute; left: 70px; right: 70px; top: 1215px; display: flex; gap: 22px; }
+  #legend div { flex: 1; border-radius: 26px; background: rgba(255,255,255,.07); padding: 22px 24px; font: 700 30px/1.3 "Inter Display"; color: var(--muted); }
+  #legend b { display: block; font: 900 36px/1.2 "Inter Display"; color: var(--yellow); margin-bottom: 4px; }
+
+  /* scene 5 */
+  #formula { position: absolute; left: 70px; right: 70px; top: 560px; border-radius: 40px; background: var(--card);
+    border: 4px solid var(--yellow); padding: 60px 56px; font: 900 66px/1.65 "Inter Display"; letter-spacing: -.01em; }
+  .slot { display: inline-block; padding: 0 24px; border-radius: 18px; line-height: 1.25; border: 4px dashed rgba(255,212,59,.6);
+    color: var(--yellow); font-weight: 900; }
+  .slot.on { background: var(--yellow); color: var(--navy); border: 4px solid var(--yellow); }
+  .fl { opacity: 0; }
+  #verbs { position: absolute; left: 70px; right: 70px; top: 1170px; text-align: center; }
+  #verbs .lbl { font: 700 30px/1 "Inter Display"; color: var(--muted); margin-bottom: 8px; }
+  #verbs .chip { display: inline-block; margin: 12px 8px 0; font-size: 32px; padding: 14px 26px; }
+
+  /* scene 6 */
+  #s6logo { position: absolute; left: 0; right: 0; top: 520px; text-align: center; }
+  #s6logo .mark { display: inline-flex; width: 200px; height: 200px; border-radius: 52px; background: var(--yellow); color: var(--navy);
+    align-items: center; justify-content: center; font: 900 92px/1 "Inter Display"; letter-spacing: -.04em; box-shadow: 0 30px 70px rgba(255,212,59,.25); }
+  #s6logo .nm { margin-top: 36px; font: 900 72px/1 "Inter Display"; }
+  #s6logo .sub { margin-top: 18px; font: 700 34px/1 "Inter Display"; color: var(--muted); }
+  #s6btns { position: absolute; left: 110px; right: 110px; top: 1000px; display: flex; flex-direction: column; gap: 26px; }
+  #s6btns div { border-radius: 999px; padding: 30px; text-align: center; font: 900 50px/1 "Inter Display"; }
+  #s6save { background: rgba(255,255,255,.1); border: 3px solid rgba(255,255,255,.25); }
+  #s6follow { background: var(--yellow); color: var(--navy); }
+</style>
+</head>
+<body>
+<div id="root">
+  <div id="blob"></div>
+  <div id="grid"></div>
+
+  <!-- SCENE 1: HOOK -->
+  <div class="scene" id="s1">
+    <div class="title" id="s1t" style="top:300px; font-size:86px; line-height:1.1">Great analysis…<br>only <span class="y">7 points</span>? <span class="emoji">😬</span></div>
+    <div id="paperWrap">
+      <div id="paper">
+        <div class="hd">Englisch · Q2 Klausur <small>Name: Lena M.</small></div>
+        <div class="task"><b>Task 2:</b> <b>Analyse</b> how the author presents the dangers of social media.</div>
+        <div class="ink" style="width:96%"></div><div class="ink" style="width:88%"></div>
+        <div class="ink" style="width:93%"></div><div class="ink" style="width:70%"></div>
+        <div class="ink" style="width:95%"></div><div class="ink" style="width:84%"></div>
+        <div class="ink" style="width:90%"></div><div class="ink" style="width:58%"></div>
+        <div class="ink" style="width:92%"></div><div class="ink" style="width:40%"></div>
+        <div id="note1" style="left:300px; top:255px">retelling!</div>
+        <div id="note2" style="left:60px; top:520px">where's the effect?</div>
+        <div id="grade">
+          <div class="n">7</div><div class="of">/15</div>
+          <svg viewBox="0 0 300 270"><path id="ring" d="M150 22 C 250 14, 292 90, 280 150 C 268 222, 190 258, 120 248 C 46 238, 8 180, 18 116 C 28 56, 96 20, 172 30"
+            fill="none" stroke="#E03131" stroke-width="12" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 2: PROBLEM -->
+  <div class="scene" id="s2">
+    <div class="title" id="s2t" style="top:340px; font-size:116px; line-height:1; white-space:nowrap"><span class="y">Analyse</span> <span class="r">≠</span> retell</div>
+    <div class="de" id="s2de" style="top:510px"><i>analysieren ≠ nacherzählen</i></div>
+    <div id="s2card">
+      <div class="lbl">What most students write:</div>
+      <div id="s2word">summary<div id="s2strike"></div></div>
+      <div id="s2retell">“First the author says… then he says… finally he says…”</div>
+      <div class="badge no" id="s2no"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+    </div>
+    <div id="s2tease">So what does it mean? <span class="emoji">👇</span></div>
+  </div>
+
+  <!-- SCENE 3: RULE -->
+  <div class="scene" id="s3">
+    <div class="title" id="s3t" style="top:330px; font-size:104px; line-height:1.05">Analyse =<br><span class="y">HOW</span> + <span class="y">EFFECT</span></div>
+    <div class="de" id="s3de" style="top:575px"><i>Wie? + Wirkung</i></div>
+    <div class="col" id="colHow" style="left:70px">
+      <div class="card" id="cardHow"><div class="ic emoji">🔧</div><div class="nm">HOW</div><div class="sub">what the author does</div></div>
+      <div class="chip" id="c1">language</div>
+      <div class="chip" id="c2">structure</div>
+      <div class="chip" id="c3">stylistic devices</div>
+    </div>
+    <div id="plus">+</div>
+    <div class="col" id="colEff" style="right:70px">
+      <div class="card" id="cardEff"><div class="ic emoji">🎯</div><div class="nm">EFFECT</div><div class="sub">on the reader</div></div>
+      <div class="chip y" id="c4">WHY it matters</div>
+    </div>
+  </div>
+
+  <!-- SCENE 4: BEFORE / AFTER -->
+  <div class="scene" id="s4">
+    <div class="title" id="s4t" style="top:280px; font-size:68px; line-height:1.12">Don't write what<br>the author <span id="s4says">says</span><span id="s4does" class="y">does</span></div>
+    <div class="sent" id="wrong">
+      <div class="badge no"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+      <div class="lab">RETELLING</div>
+      <p>The author <span id="wSays">says</span> that social media is dangerous.</p>
+      <div id="wrongStrike"></div>
+    </div>
+    <div class="sent" id="right">
+      <div class="badge ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="lab">ANALYSIS</div>
+      <p><span class="hl" id="h1">By using rhetorical questions</span>, the author <span class="hl" id="h2">engages</span> the reader and <span class="hl" id="h3">emphasises</span> the dangers of social media.</p>
+    </div>
+    <div id="legend">
+      <div id="lg1"><b><span class="emoji">🔧</span> HOW</b>By using rhetorical questions</div>
+      <div id="lg2"><b><span class="emoji">🎯</span> EFFECT</b>engages · emphasises</div>
+    </div>
+  </div>
+
+  <!-- SCENE 5: FORMULA -->
+  <div class="scene" id="s5">
+    <div class="title" id="s5t" style="top:320px; font-size:96px">Quick formula <span class="emoji">⚡</span></div>
+    <div class="de" id="s5de" style="top:445px"><i>deine Formel</i></div>
+    <div id="formula">
+      <div class="fl" id="f1">By using <span class="slot" id="sl1">[device]</span>,</div>
+      <div class="fl" id="f2">the author <span class="slot" id="sl2">[verb]</span> …</div>
+      <div class="fl" id="f3">→ <span class="slot" id="sl3">[effect]</span></div>
+    </div>
+    <div id="verbs">
+      <div class="lbl">Strong verbs:</div>
+      <span class="chip" id="v1">emphasises</span><span class="chip" id="v2">highlights</span><span class="chip" id="v3">criticises</span><span class="chip" id="v4">engages</span>
+    </div>
+  </div>
+
+  <!-- SCENE 6: CTA -->
+  <div class="scene" id="s6">
+    <div id="s6logo"><div class="mark" id="s6mark">E<span style="opacity:.45">·</span>I</div><div class="nm" id="s6nm">English mit <span class="y">Ilyas</span></div>
+      <div class="sub" id="s6sub">Oberstufe · Landesabitur Hessen</div></div>
+    <div id="s6btns">
+      <div id="s6save"><span class="emoji">📌</span> Save this</div>
+      <div id="s6follow">Follow for Ep. 2 →</div>
+    </div>
+  </div>
+
+  <!-- persistent -->
+  <div id="progress"></div>
+  <div id="tag">Road to Abi 2027 <b>· Ep. 1</b></div>
+  <div id="brand"><span>English</span> mit Ilyas</div>
+  <div id="cap"></div>
+</div>
+
+<script>
+const DATA = window.TIMINGS;
+const WORDS = DATA.words;
+const clamp = x => Math.max(0, Math.min(1, x));
+const prog = (t, a, d = .35) => clamp((t - a) / d);
+const eo = x => 1 - Math.pow(1 - x, 3);
+const eb = x => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+const $ = id => document.getElementById(id);
+const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+// word start time: line index + word prefix (nth match)
+function ws(line, prefix, nth = 0) {
+  const m = WORDS.filter(w => w.line === line && norm(w.w).startsWith(prefix));
+  if (!m[nth]) throw new Error(`no word ${prefix} in line ${line}`);
+  return m[nth].s;
+}
+
+function pop(el, t, a, o = {}) {
+  const { d = .45, dy = 50, s0 = .8, dx = 0 } = o;
+  const x = prog(t, a, d);
+  el.style.opacity = eo(x);
+  el.style.transform = `translate(${(1 - eo(x)) * dx}px, ${(1 - eo(x)) * dy}px) scale(${s0 + (1 - s0) * eb(x)})`;
+}
+
+// ---- caption chunks ----
+const KEY = new Set(['7', 'analyse', 'analysis', 'how', 'effect', 'why', 'does', 'says', 'formula', 'device']);
+const chunks = [];
+DATA.lines.forEach((text, li) => {
+  const raw = text.split(/\s+/);
+  const lw = WORDS.filter(w => w.line === li);
+  const breakAfter = new Set();
+  let k = -1;
+  raw.forEach(tok => { if (tok === '–') breakAfter.add(k); else k++; });
+  let cur = [];
+  lw.forEach((w, i) => {
+    cur.push(w);
+    if (cur.length >= 3 || /[,.:?!]$/.test(w.w) || breakAfter.has(i) || i === lw.length - 1) { chunks.push(cur); cur = []; }
+  });
+});
+chunks.forEach((c, i) => {
+  c.s = c[0].s;
+  const next = chunks[i + 1];
+  c.e = Math.min(next ? next[0].s : 99, c[c.length - 1].e + .45);
+});
+let shownChunk = null;
+function renderCaptions(t) {
+  const cap = $('cap');
+  const c = chunks.find(c => t >= c.s - .06 && t < c.e);
+  if (c !== shownChunk) {
+    shownChunk = c;
+    cap.innerHTML = c ? `<div>${c.map((w, i) => `<span class="w${KEY.has(norm(w.w)) ? ' k' : ''}" data-i="${i}">${w.w}</span>`).join(' ')}</div>` : '';
+  }
+  if (!c) return;
+  const x = prog(t, c.s - .06, .14);
+  cap.firstChild.style.transform = `scale(${.9 + .1 * eo(x)})`;
+  cap.firstChild.style.opacity = eo(x);
+  cap.querySelectorAll('.w').forEach((el, i) => {
+    const w = c[i];
+    const st = t < w.s ? 'f' : (t < w.e + .03 ? 'c' : 'p');
+    el.classList.remove('f', 'p', 'c'); el.classList.add(st);
+  });
+}
+
+// ---- scenes ----
+const SCENES = [['s1', 0, 4.15], ['s2', 4.15, 10.0], ['s3', 10.0, 20.3], ['s4', 20.3, 32.15], ['s5', 32.15, 37.05], ['s6', 37.05, 99]];
+function renderScenes(t) {
+  for (const [id, a, b] of SCENES) {
+    const el = $(id);
+    if (t < a - .01 || t > b + .01) { el.style.display = 'none'; continue; }
+    el.style.display = 'block';
+    const i = a === 0 ? 1 : eo(prog(t, a, .3));
+    const o = 1 - eo(prog(t, b - .28, .28));
+    el.style.opacity = Math.min(i, o);
+    el.style.transform = `translateY(${(1 - i) * 40 - (1 - o) * 40}px)`;
+  }
+}
+
+function s1(t) {
+  pop($('s1t'), t, 0.0, { d: .4, s0: .7 });
+  // paper slides up, then quick zoom on the grade
+  const pin = eo(prog(t, 0.05, .45));
+  const z = eo(prog(t, 1.75, .45));
+  const wrap = $('paperWrap');
+  wrap.style.opacity = pin;
+  wrap.style.transformOrigin = '78% 82%';
+  const shake = t > 2.2 && t < 2.5 ? Math.sin(t * 90) * 6 * (1 - prog(t, 2.2, .3)) : 0;
+  wrap.style.transform = `translate(${shake}px, ${(1 - pin) * 300}px) scale(${0.92 + .08 * pin + .38 * z})`;
+  pop($('note1'), t, 0.9, { d: .25, dy: 0, s0: 1.6 });
+  pop($('note2'), t, 1.25, { d: .25, dy: 0, s0: 1.6 });
+  for (const n of ['note1', 'note2']) $(n).style.transform += ' rotate(-8deg)';
+  const ring = $('ring'), L = ring.getTotalLength();
+  ring.style.strokeDasharray = L;
+  ring.style.strokeDashoffset = L * (1 - eo(prog(t, 1.85, .4)));
+  // title nudges up a bit when "Here's why" lands
+  $('s1t').style.transform += ` translateY(${-20 * eo(prog(t, 3.2, .3))}px)`;
+}
+
+function s2(t) {
+  const a = ws(2, 'most');
+  pop($('s2t'), t, a - .05, { s0: .6 });
+  pop($('s2de'), t, a + .45, { dy: 20 });
+  pop($('s2card'), t, a + .25, { dy: 80, s0: .95 });
+  const st = ws(2, 'retell');
+  $('s2strike').style.width = `calc(${eo(prog(t, st, .3)) * 100}% + 32px)`;
+  pop($('s2no'), t, st + .25, { dy: 0, s0: .2 });
+  $('s2word').style.opacity = 1 - .45 * prog(t, st + .2, .3);
+  pop($('s2tease'), t, ws(3, 'something'), { dy: 30 });
+}
+
+function s3(t) {
+  pop($('s3t'), t, 10.0, { s0: .6 });
+  pop($('s3de'), t, 10.5, { dy: 20 });
+  pop($('cardHow'), t, ws(4, 'how') - .05, { s0: .3, dy: 0 });
+  pop($('plus'), t, ws(4, 'creates'), { s0: .2, dy: 0 });
+  pop($('cardEff'), t, ws(4, 'effect') - .05, { s0: .3, dy: 0 });
+  pop($('c1'), t, ws(5, 'language') - .05, { dy: 40 });
+  pop($('c2'), t, ws(5, 'structure') - .05, { dy: 40 });
+  pop($('c3'), t, ws(5, 'stylistic') - .05, { dy: 40 });
+  pop($('c4'), t, ws(6, 'why') - .1, { dy: 40, s0: .5 });
+  // glow the card being talked about
+  const howOn = t >= ws(5, 'language') - .1 && t < ws(6, 'and');
+  const effOn = t >= ws(6, 'and');
+  $('cardHow').style.boxShadow = howOn ? '0 0 0 10px rgba(255,212,59,.18), 0 30px 60px rgba(0,0,0,.35)' : '0 30px 60px rgba(0,0,0,.35)';
+  $('cardEff').style.boxShadow = effOn ? '0 0 0 10px rgba(255,212,59,.18), 0 30px 60px rgba(0,0,0,.35)' : '0 30px 60px rgba(0,0,0,.35)';
+}
+
+function s4(t) {
+  const tWrite = ws(8, 'write');
+  pop($('s4t'), t, 20.35, { s0: .8 });
+  // title word swaps "says" -> "does"
+  const sw = prog(t, ws(8, 'does') - .1, .25);
+  $('s4says').style.display = sw < .5 ? 'inline' : 'none';
+  $('s4does').style.display = sw < .5 ? 'none' : 'inline';
+  $('s4says').style.textDecoration = t > ws(7, 'says') ? 'line-through' : 'none';
+  $('s4says').style.textDecorationColor = '#FF5A5F';
+  $('s4says').style.textDecorationThickness = '6px';
+  $('s4says').style.color = t > ws(7, 'says') ? '#FF5A5F' : '#fff';
+  $('s4does').style.display === 'inline' && ($('s4does').style.transform = `scale(${.7 + .3 * eb(prog(t, ws(8, 'does') - .1, .35))})`, $('s4does').style.display = 'inline-block');
+
+  // wrong sentence slides in from the left; later shrinks & dims at the top
+  const w = $('wrong');
+  const xin = eo(prog(t, 20.4, .45));
+  const shrink = eo(prog(t, tWrite - .35, .45));
+  w.style.opacity = xin * (1 - .45 * shrink);
+  w.style.transform = `translateX(${(1 - xin) * -1100}px) scale(${1 - .14 * shrink})`;
+  $('wSays').style.background = t > ws(7, 'says') ? 'rgba(255,90,95,.35)' : 'transparent';
+  $('wSays').style.borderRadius = '8px';
+  $('wrongStrike').style.transform = `scaleX(${eo(prog(t, tWrite - .3, .35))})`;
+  // the correct one grows out of it
+  const r = $('right');
+  const rin = eo(prog(t, tWrite - .2, .5));
+  r.style.opacity = rin;
+  r.style.transform = `translateY(${(1 - rin) * -240}px) scale(${.85 + .15 * eb(prog(t, tWrite - .2, .5))})`;
+  // marker sweeps
+  const h = [['h1', tWrite + .55], ['h2', ws(8, 'effect') - .2], ['h3', ws(8, 'has') + .1]];
+  h.forEach(([id, a]) => {
+    const x = eo(prog(t, a, .4));
+    const el = $(id);
+    el.style.backgroundSize = `${x * 100}% 100%`;
+    el.style.color = x > .45 ? '#0B1A33' : '#fff';
+  });
+  pop($('lg1'), t, 28.2, { dy: 40 });
+  pop($('lg2'), t, 28.5, { dy: 40 });
+  // "See the difference?" -> pulse both badges
+  const pulse = t > 29.4 && t < 30.4 ? 1 + .08 * Math.sin((t - 29.4) * Math.PI * 2) : 1;
+  r.style.transform += ` scale(${pulse})`;
+}
+
+function s5(t) {
+  pop($('s5t'), t, 32.2, { s0: .6 });
+  pop($('s5de'), t, 32.6, { dy: 20 });
+  pop($('formula'), t, 32.3, { s0: .9, dy: 60 });
+  pop($('f1'), t, ws(10, 'by') - .1, { dy: 30, s0: 1 });
+  pop($('f2'), t, ws(11, 'the') - .1, { dy: 30, s0: 1 });
+  pop($('f3'), t, ws(11, 'with') - .1, { dy: 30, s0: 1 });
+  [['sl1', ws(10, 'device')], ['sl2', ws(11, 'does')], ['sl3', ws(11, 'effect')]].forEach(([id, a]) => {
+    const on = t >= a - .05;
+    const el = $(id);
+    el.classList.toggle('on', on);
+    el.style.transform = `scale(${on ? .85 + .15 * eb(prog(t, a - .05, .3)) : 1})`;
+  });
+  ['v1', 'v2', 'v3', 'v4'].forEach((id, i) => pop($(id), t, 35.6 + i * .15, { dy: 30, s0: .6 }));
+  pop($('verbs').querySelector('.lbl'), t, 35.5, { dy: 20, s0: 1 });
+}
+
+function s6(t) {
+  pop($('s6mark'), t, 37.1, { s0: .2, dy: 0, d: .5 });
+  pop($('s6nm'), t, 37.35, { dy: 40 });
+  pop($('s6sub'), t, 37.55, { dy: 30 });
+  pop($('s6save'), t, ws(12, 'save') + .05, { dy: 60 });
+  pop($('s6follow'), t, ws(12, 'follow') - .05, { dy: 60, s0: .6 });
+  if (t > 38.6) $('s6follow').style.transform += ` scale(${1 + .04 * Math.sin((t - 38.6) * 7)})`;
+}
+
+window.render = function (t) {
+  $('progress').style.width = `${clamp(t / 40) * 1080}px`;
+  $('blob').style.left = `${90 + Math.sin(t * .35) * 160}px`;
+  $('blob').style.top = `${380 + Math.cos(t * .27) * 220}px`;
+  renderScenes(t);
+  if (t < 4.2) s1(t);
+  if (t >= 4.1 && t < 10.05) s2(t);
+  if (t >= 9.95 && t < 20.35) s3(t);
+  if (t >= 20.25 && t < 32.2) s4(t);
+  if (t >= 32.1 && t < 37.1) s5(t);
+  if (t >= 37.0) s6(t);
+  renderCaptions(t);
+};
+</script>
+</body>
+</html>
